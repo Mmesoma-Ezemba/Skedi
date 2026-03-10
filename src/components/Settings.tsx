@@ -1,4 +1,11 @@
-export function Settings() {
+import { TIMEZONES } from '../types';
+
+interface SettingsProps {
+  timezone: string;
+  onTimezoneChange: (tz: string) => void;
+}
+
+export function Settings({ timezone, onTimezoneChange }: SettingsProps) {
   return (
     <div className="max-w-3xl mx-auto w-full">
       <div className="mb-8">
@@ -22,10 +29,14 @@ export function Settings() {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Timezone</label>
-              <select className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
-                <option>Pacific Time (PT)</option>
-                <option>Eastern Time (ET)</option>
-                <option>Coordinated Universal Time (UTC)</option>
+              <select
+                value={timezone}
+                onChange={(e) => onTimezoneChange(e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+              >
+                {TIMEZONES.map(tz => (
+                  <option key={tz.value} value={tz.value}>{tz.label}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -92,7 +103,7 @@ export function Settings() {
             </button>
           </div>
         </section>
-        
+
         <div className="flex justify-end">
           <button className="px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-xl font-medium shadow-sm transition-colors">
             Save Preferences

@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { Task, TaskPriority, TaskStatus } from './types';
+import { Task, TaskPriority, TaskStatus, TIMEZONES } from './types';
 import { Timeline } from './components/Timeline';
 import { CalendarView } from './components/CalendarView';
 import { TaskModal } from './components/TaskModal';
@@ -19,7 +19,8 @@ type Tab = 'today' | 'inbox' | 'calendar' | 'deadlines' | 'progress' | 'settings
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('today');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [timezone, setTimezone] = useState(() => Intl.DateTimeFormat().resolvedOptions().timeZone);
+
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
@@ -90,6 +91,10 @@ export default function App() {
     setTasks([...tasks, { ...newTask, id: Date.now().toString() }]);
   };
 
+  const handleUpdateTask = (updatedTask: Task) => {
+    setTasks(tasks.map(t => t.id === updatedTask.id ? updatedTask : t));
+  };
+
   const remainingTasks = tasks.filter(t => t.status !== 'completed').length;
 
   const renderContent = () => {
@@ -143,9 +148,9 @@ export default function App() {
               </section>
 
               {/* Today's Timeline */}
-              <Timeline 
-                tasks={tasks} 
-                onToggleComplete={handleToggleComplete} 
+              <Timeline
+                tasks={tasks}
+                onToggleComplete={handleToggleComplete}
                 onToggleReminder={handleToggleReminder}
               />
             </div>
@@ -237,13 +242,13 @@ export default function App() {
       case 'inbox':
         return <Inbox tasks={tasks} onAddTask={handleAddTask} />;
       case 'calendar':
-        return <CalendarView tasks={tasks} />;
+        return <CalendarView tasks={tasks} onUpdateTask={handleUpdateTask} onAddTask={handleAddTask} timezone={timezone} />;
       case 'deadlines':
         return <Deadlines tasks={tasks} />;
       case 'progress':
         return <Progress tasks={tasks} />;
       case 'settings':
-        return <Settings />;
+        return <Settings timezone={timezone} onTimezoneChange={setTimezone} />;
       default:
         return null;
     }
@@ -264,7 +269,7 @@ export default function App() {
               </div>
               <nav className="hidden lg:flex items-center gap-1">
                 {(['today', 'inbox', 'calendar', 'deadlines', 'progress', 'settings'] as Tab[]).map((tab) => (
-                  <button 
+                  <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={cn(
@@ -273,11 +278,11 @@ export default function App() {
                     )}
                   >
                     <span className="material-symbols-outlined text-[18px]">
-                      {tab === 'today' ? 'today' : 
-                       tab === 'inbox' ? 'inbox' : 
-                       tab === 'calendar' ? 'calendar_month' : 
-                       tab === 'deadlines' ? 'notification_important' : 
-                       tab === 'progress' ? 'analytics' : 'settings'}
+                      {tab === 'today' ? 'today' :
+                        tab === 'inbox' ? 'inbox' :
+                          tab === 'calendar' ? 'calendar_month' :
+                            tab === 'deadlines' ? 'notification_important' :
+                              tab === 'progress' ? 'analytics' : 'settings'}
                     </span>
                     {tab}
                   </button>
@@ -341,7 +346,7 @@ export default function App() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button 
+                  <button
                     onClick={() => setIsModalOpen(true)}
                     className="group flex items-center gap-2 bg-primary hover:bg-blue-600 text-white shadow-lg shadow-primary/30 px-5 py-3 rounded-xl transition-all duration-300 font-medium cursor-pointer"
                   >
@@ -361,11 +366,11 @@ export default function App() {
           </main>
         </div>
       </div>
-      
-      <TaskModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={handleAddTask} 
+
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleAddTask}
       />
     </div>
   );

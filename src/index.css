@@ -45,3 +45,116 @@
     display: none;
   }
 }
+
+/* Calendar Animations */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@layer utilities {
+  .calendar-task-enter {
+    animation: fadeSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .calendar-task-scale {
+    animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .pulse-dot {
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+
+  .calendar-slot-hover {
+    transition: background-color 0.15s ease;
+  }
+  .calendar-slot-hover:hover {
+    background: rgba(25, 110, 230, 0.04);
+  }
+  .dark .calendar-slot-hover:hover {
+    background: rgba(25, 110, 230, 0.08);
+  }
+
+  .calendar-slot-dragover {
+    background: rgba(25, 110, 230, 0.1) !important;
+    outline: 2px dashed rgba(25, 110, 230, 0.4);
+    outline-offset: -2px;
+  }
+  .dark .calendar-slot-dragover {
+    background: rgba(25, 110, 230, 0.15) !important;
+    outline-color: rgba(25, 110, 230, 0.5);
+  }
+
+  .resize-handle {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .group:hover .resize-handle {
+    opacity: 1;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-chip {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .filter-chip:hover {
+    transform: translateY(-1px);
+  }
+  .filter-chip-active {
+    box-shadow: 0 0 0 2px rgba(25, 110, 230, 0.3);
+  }
+}
